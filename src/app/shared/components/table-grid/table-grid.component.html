@@ -516,7 +516,8 @@
                                        appendTo="body"
                                        [placeholder]="'Select ' + col['field'] + '(s)' "
                                        [virtualScroll]="(filterOptionsByColumn()?.[col?.value]?.length || 0) > 30"
-                                       [virtualScrollItemSize]="30">
+                                       [virtualScrollItemSize]="30"
+                                       style="width: 100%">
                                        @if (col['type'] == 'country') {
                                         <ng-template pTemplate="item" let-item>
                                           <div class="row align-items-center">
@@ -540,7 +541,8 @@
                           {{col['field']}}
                         </label>
                         <input type="text" pInputText [(ngModel)]="TextFilterModels()[col['value']]"
-                        [placeholder]="'Enter ' + col['field'] "/>
+                        [placeholder]="'Enter ' + col['field'] "
+                        style="width: 100%"/>
                       </div>
                     </div>
                   </div>

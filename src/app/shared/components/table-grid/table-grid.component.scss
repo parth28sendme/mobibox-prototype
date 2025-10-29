@@ -79,4 +79,17 @@ app-table-grid {
   .sort-header-reset:hover {
     background-color: var(--surface-hover) !important;
   }
+
+  p-multiselect,
+  input[pInputText] {
+    width: 100% !important;
+  }
+
+  .p-multiselect {
+    width: 100% !important;
+  }
+
+  .p-inputtext {
+    width: 100% !important;
+  }
 }
