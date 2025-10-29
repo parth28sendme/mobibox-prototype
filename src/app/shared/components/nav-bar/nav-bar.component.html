@@ -1,0 +1,59 @@
+<div class="navbar-custom" [class.squeeze]="squeeze">
+  <div class="row h-100 justify-content-between align-items-center m-0">
+    <div class="col p-0 breadCrumb">
+      <!-- Breadcrumb placeholder -->
+      <span class="breadcrumb-text">Dashboard</span>
+    </div>
+    
+    <div class="col-auto p-0">
+      <button pButton [text]="true" label="Get Assistance" icon="pi pi-question-circle"></button>
+    </div>
+    
+    <div class="col-auto h-100 p-0">
+      <div class="row h-100 m-0 align-items-center profile-button">
+        <div class="row h-100 m-0 align-items-center profile-button" 
+             [class.profileSelected]="profile"
+             (click)="toggleProfile()">
+          <div class="col-12">
+            <div class="row align-items-center">
+              <div class="col-auto">
+                <i class="fa-solid fa-circle-user" style="font-size: 20px; color: var(--p-primary-600);"></i>
+              </div>
+              <div class="col p-0 username-max-width">
+                <div class="row">
+                  <div class="col-12 username">
+                    {{username}}
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-12 rolename">
+                    {{roleName}}
+                  </div>
+                </div>
+              </div>
+              <div class="col-auto">
+                <i class="pi pi-chevron-down profileChevron"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Profile dropdown menu -->
+      <div *ngIf="profile" class="profile-dropdown">
+        <div class="dropdown-item">
+          <i class="pi pi-user"></i>
+          <span>Profile</span>
+        </div>
+        <div class="dropdown-item">
+          <i class="pi pi-cog"></i>
+          <span>Settings</span>
+        </div>
+        <div class="dropdown-item logout">
+          <i class="pi pi-sign-out"></i>
+          <span>Logout</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

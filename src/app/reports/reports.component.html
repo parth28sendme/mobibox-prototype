@@ -1,0 +1,104 @@
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <div class="row justify-content-between align-items-center">
+            <div class="col-auto">
+              <h4 class="mb-0">Campaign Reports</h4>
+              <p class="text-muted mb-0">Automated action reports and analytics</p>
+            </div>
+            <div class="col-auto">
+              <button class="btn btn-primary" (click)="refreshData()">
+                <i class="pi pi-refresh"></i> Refresh Data
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <app-table-grid
+            [(value)]="reportsData"
+            [columns]="columns"
+            [title]="'Campaign Performance Data'"
+            [loading]="loading()"
+            [rows]="10"
+            [rowsPerPageOptions]="[10, 25, 50, 100]"
+            [hasSearch]="true"
+            [hasExport]="true"
+            [hasClear]="true"
+            [hasFilters]="true"
+            [hasEditColumns]="true"
+            [hasTotal]="true"
+            (buttonOutput)="onButtonClick($event)"
+            (filteredvalues)="onFilteredValues($event)"
+            (onPage)="onPageChange($event)">
+          </app-table-grid>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Additional Statistics Cards -->
+  <div class="row mt-4">
+    <div class="col-md-3">
+      <div class="card bg-primary text-white">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h6 class="card-title">Total Campaigns</h6>
+              <h3 class="mb-0">{{reportsData().length}}</h3>
+            </div>
+            <div class="align-self-center">
+              <i class="pi pi-chart-line" style="font-size: 2rem;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-success text-white">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h6 class="card-title">Active Campaigns</h6>
+              <h3 class="mb-0">{{getActiveCampaigns()}}</h3>
+            </div>
+            <div class="align-self-center">
+              <i class="pi pi-check-circle" style="font-size: 2rem;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-warning text-white">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h6 class="card-title">Total Actions</h6>
+              <h3 class="mb-0">{{getTotalActions()}}</h3>
+            </div>
+            <div class="align-self-center">
+              <i class="pi pi-cog" style="font-size: 2rem;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-info text-white">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h6 class="card-title">Avg. Performance</h6>
+              <h3 class="mb-0">{{getAveragePerformance()}}</h3>
+            </div>
+            <div class="align-self-center">
+              <i class="pi pi-chart-bar" style="font-size: 2rem;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

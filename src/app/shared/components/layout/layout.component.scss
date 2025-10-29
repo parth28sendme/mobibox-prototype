@@ -1,0 +1,236 @@
+.left-side-menu {
+  width: 250px;
+  background: var(--app-left-menu-background);
+  padding: 10px 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  box-shadow: 0 2px 6px -2px rgba(0, 0, 0, .16), 0 2px 6px 0 rgba(0, 0, 0, .12);
+  transition: width 0.2s ease-in-out;
+  z-index: 2;
+}
+
+.left-side-menu.squeeze {
+  width: 70px;
+}
+
+.menuHead {
+  font-family: 'Poppins', sans-serif;
+  line-height: 18px;
+  font-weight: 400;
+  color: #fff;
+  cursor: pointer;
+  padding: 13px 10px;
+}
+
+.menuHead.active {
+  font-weight: 700;
+}
+
+.menuHead.active:not(.squeeze) i.margin-right-7 {
+  color: #58B99E;
+}
+
+.menuHead.active i.pi.pi-chevron-down {
+  transform: rotate(180deg);
+}
+
+.menuHead i.pi.pi-chevron-down {
+  transition: transform 0.3s ease-in-out;
+  font-size: 10px;
+}
+
+.menuHead.squeeze:hover {
+  background: rgba(254, 250, 241, 0.05);
+}
+
+.menu-single.squeeze:hover {
+  background: rgba(254, 250, 241, 0.05);
+}
+
+.menuChild {
+  padding: 13px 10px;
+  cursor: pointer;
+}
+
+.menuChild > .child-a {
+  font-family: 'Poppins', sans-serif;
+  line-height: 18px;
+  font-weight: 400;
+  color: #fff;
+  padding: 0 0 0 20px;
+}
+
+.menuChild:has(.active) {
+  border-radius: 5px;
+  background: hsla(180, 0%, 100%, 0.2);
+}
+
+.menuChild > .child-a.active {
+  font-weight: 700;
+}
+
+.slimscroll-menu {
+  overflow-y: auto;
+  margin-right: 4px;
+  height: calc(100vh - 200px);
+}
+
+.slimscroll-menu::-webkit-scrollbar {
+  width: 4px;
+}
+
+.slimscroll-menu::-webkit-scrollbar-thumb {
+  background: var(--p-primary-300, #93c5fd);
+  border-radius: 5px;
+}
+
+.humberger-button {
+  color: #fff;
+  width: 3rem !important;
+  padding: 0.75rem 0 !important;
+  height: 3rem !important;
+}
+
+li {
+  list-style-type: none;
+}
+
+.top-head {
+  padding: 0 12px;
+}
+
+ul {
+  padding: 0;
+}
+
+.menu-single {
+  font-family: 'Poppins', sans-serif;
+  line-height: 18px;
+  font-weight: 400;
+  cursor: pointer;
+  padding: 13px 10px;
+}
+
+.menu-single a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.menuChild a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.menuChild a:hover {
+  text-decoration: none;
+}
+
+.menu-single a:hover {
+  text-decoration: none;
+}
+
+.menu-single a.active {
+  font-weight: 700;
+}
+
+.menu-single:has(.active) {
+  border-radius: 5px;
+  background: hsla(180, 0%, 100%, 0.2) !important;
+}
+
+.margin-right-7 {
+  margin-right: 7px;
+}
+
+.remove-margin.margin-right-7 {
+  margin-right: 0;
+}
+
+.menu-single a.active i.margin-right-7 {
+  color: #58B99E;
+}
+
+.powered-by {
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 11px;
+}
+
+.powered-by-section {
+  position: absolute;
+  bottom: 40px;
+  width: 100%;
+}
+
+.icon-size {
+  font-size: 1rem;
+}
+
+.custom-input-color::placeholder {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.custom-input-color {
+  color: #fff !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 6px !important;
+  padding: 8px 12px !important;
+  width: 100% !important;
+}
+
+.custom-input-color:focus {
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1) !important;
+  outline: none !important;
+}
+
+:host ::ng-deep .p-inputtext {
+  background-color: transparent !important;
+  color: #fff !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 6px !important;
+}
+
+:host ::ng-deep .p-inputtext:focus {
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1) !important;
+}
+
+:host ::ng-deep .p-inputtext::placeholder {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+:host ::ng-deep .p-icon-field .p-input-icon {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+@media (max-width: 767px) {
+  .left-side-menu {
+    display: none;
+  }
+}
+
+/* Remove underlines from all menu links */
+.left-side-menu a {
+  text-decoration: none !important;
+}
+
+.left-side-menu a:hover {
+  text-decoration: none !important;
+}
+
+.left-side-menu a:focus {
+  text-decoration: none !important;
+}
+
+.left-side-menu a:active {
+  text-decoration: none !important;
+}
+
+.left-side-menu a:visited {
+  text-decoration: none !important;
+}

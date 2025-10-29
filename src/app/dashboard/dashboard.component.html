@@ -1,0 +1,122 @@
+<div class="container-fluid">
+    <div class="row mb-4">
+      <div class="col-12">
+        <h1 class="new-page-title">Dashboard</h1>
+        <p class="text-muted">Welcome to your MobiBox prototype dashboard</p>
+      </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+      <div class="col-xl-3 col-md-6 mb-3" *ngFor="let card of cards">
+        <p-card styleClass="h-100">
+          <div class="d-flex align-items-center">
+            <div class="flex-shrink-0">
+              <div class="stat-icon" [ngClass]="'bg-' + card.color">
+                <i [class]="card.icon"></i>
+              </div>
+            </div>
+            <div class="flex-grow-1 ms-3">
+              <div class="stat-value">{{card.value}}</div>
+              <div class="stat-label">{{card.title}}</div>
+            </div>
+          </div>
+        </p-card>
+      </div>
+    </div>
+
+    <!-- Sample Content -->
+    <div class="row">
+      <div class="col-lg-8 mb-4">
+        <p-card header="Recent Activity">
+          <div class="activity-item">
+            <div class="activity-icon bg-primary">
+              <i class="pi pi-user"></i>
+            </div>
+            <div class="activity-content">
+              <h6>New user registered</h6>
+              <p class="text-muted mb-0">John Doe joined the platform</p>
+              <small class="text-muted">2 hours ago</small>
+            </div>
+          </div>
+          
+          <div class="activity-item">
+            <div class="activity-icon bg-success">
+              <i class="pi pi-check"></i>
+            </div>
+            <div class="activity-content">
+              <h6>Order completed</h6>
+              <p class="text-muted mb-0">Order #12345 has been processed</p>
+              <small class="text-muted">4 hours ago</small>
+            </div>
+          </div>
+          
+          <div class="activity-item">
+            <div class="activity-icon bg-warning">
+              <i class="pi pi-exclamation-triangle"></i>
+            </div>
+            <div class="activity-content">
+              <h6>System maintenance</h6>
+              <p class="text-muted mb-0">Scheduled maintenance completed</p>
+              <small class="text-muted">1 day ago</small>
+            </div>
+          </div>
+        </p-card>
+      </div>
+      
+      <div class="col-lg-4 mb-4">
+        <p-card header="Quick Actions">
+          <div class="d-grid gap-2">
+            <button pButton label="Add New User" icon="pi pi-plus" class="p-button-outlined"></button>
+            <button pButton label="Generate Report" icon="pi pi-file" class="p-button-outlined"></button>
+            <button pButton label="System Settings" icon="pi pi-cog" class="p-button-outlined"></button>
+            <button pButton label="View Analytics" icon="pi pi-chart-bar" class="p-button-outlined"></button>
+          </div>
+        </p-card>
+      </div>
+    </div>
+
+    <!-- Sample Table -->
+    <div class="row">
+      <div class="col-12">
+        <p-card header="Recent Transactions">
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>User</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>#001</td>
+                  <td>John Doe</td>
+                  <td>$125.00</td>
+                  <td><span class="mobibox-status-badge mobibox-success">Completed</span></td>
+                  <td>2024-01-15</td>
+                </tr>
+                <tr>
+                  <td>#002</td>
+                  <td>Jane Smith</td>
+                  <td>$89.50</td>
+                  <td><span class="mobibox-status-badge mobibox-warning">Pending</span></td>
+                  <td>2024-01-14</td>
+                </tr>
+                <tr>
+                  <td>#003</td>
+                  <td>Bob Johnson</td>
+                  <td>$200.00</td>
+                  <td><span class="mobibox-status-badge mobibox-danger">Failed</span></td>
+                  <td>2024-01-13</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </p-card>
+      </div>
+    </div>
+  </div>

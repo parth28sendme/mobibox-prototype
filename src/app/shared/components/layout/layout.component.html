@@ -1,0 +1,131 @@
+<app-nav-bar></app-nav-bar>
+
+<div class="left-side-menu" [class.squeeze]="squeeze">
+  <!-- Header with logo and hamburger -->
+  <div class="row m-0 justify-content-center" *ngIf="squeeze">
+    <div class="col-auto p-0">
+      <button pButton icon="pi pi-bars" [text]="true" class="humberger-button"
+        (click)="toggleSqueeze()"></button>
+    </div>
+  </div>
+
+  <div class="row justify-content-around m-0" *ngIf="!squeeze">
+    <div class="col-auto p-0">
+      <img src="assets/images/logo.svg" alt="MobiBox" width="162px" height="34px" style="cursor: pointer;" 
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <div class="logo-text" style="display: none; color: #fff; font-size: 20px; font-weight: bold; cursor: pointer;">
+        MobiBox
+      </div>
+    </div>
+    <div class="col-auto p-0">
+      <button pButton icon="pi pi-bars" [text]="true" class="humberger-button"
+        (click)="toggleSqueeze()"></button>
+    </div>
+  </div>
+
+  <div class="row ml-0 mr-0 justify-content-center mb-4" *ngIf="squeeze">
+    <div class="col-auto p-0">
+      <img src="assets/images/logo-icon.svg" alt="MobiBox" width="30px" height="30px" style="cursor: pointer;"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <div class="logo-icon-text" style="display: none; color: #fff; font-size: 16px; font-weight: bold; cursor: pointer;">
+        M
+      </div>
+    </div>
+  </div>
+
+  <!-- Search bar -->
+  <div class="row ml-0 mr-0 mt-4 mb-4 px-3" *ngIf="!squeeze">
+    <div class="col-12">
+      <p-iconField iconPosition="left">
+        <p-inputIcon>
+          <i class="pi pi-search"></i>
+        </p-inputIcon>
+        <input class="custom-input-color" type="text" pInputText placeholder="Search" 
+               [(ngModel)]="searchInput">
+      </p-iconField>
+    </div>
+  </div>
+
+  <!-- Menu items -->
+  <div class="slimscroll-menu">
+    <ul class="top-head">
+      <li *ngFor="let item of menuItems; let i = index">
+        <!-- Tree menu items -->
+        <div *ngIf="item.isTree">
+          <div class="row m-0 justify-content-between menuHead" 
+               [class.active]="clickedIndex === i"
+               [class.squeeze]="squeeze" 
+               (click)="onParentClick(i)">
+            <div class="col p-0">
+              <div class="row m-0 justify-content-center">
+                <div class="col-auto p-0">
+                  <i class="{{item.icon}} icon-size margin-right-7"
+                     [class.remove-margin]="squeeze"></i>
+                </div>
+                <div class="col p-0" *ngIf="!squeeze">
+                  {{item.menuName}}
+                </div>
+              </div>
+            </div>
+            <div class="col-auto p-0" *ngIf="!squeeze">
+              <i class="pi pi-chevron-down"></i>
+            </div>
+          </div>
+          
+          <!-- Child menu items -->
+          <ul *ngIf="clickedIndex === i && !squeeze">
+            <a *ngFor="let child of item.childrens" [routerLink]="child.url">
+              <li class="menuChild">
+                <div class="row m-0 child-a" routerLinkActive="active">
+                  <div class="col-8 p-0">
+                    {{child.menuName}}
+                  </div>
+                </div>
+              </li>
+            </a>
+          </ul>
+        </div>
+
+        <!-- Single menu items -->
+        <div *ngIf="!item.isTree" class="menu-single" [class.squeeze]="squeeze">
+          <a routerLinkActive="active" [routerLink]="item.url">
+            <div class="row m-0 justify-content-center">
+              <div class="col-auto p-0">
+                <i class="{{item.icon}} icon-size margin-right-7"
+                   [class.remove-margin]="squeeze"></i>
+              </div>
+              <div class="col p-0" *ngIf="!squeeze">
+                <span>{{item.menuName}}</span>
+              </div>
+            </div>
+          </a>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Powered by section -->
+  <div class="row ml-0 mr-0 align-items-bottom powered-by-section">
+    <div class="col-12">
+      <div class="row" *ngIf="!squeeze">
+        <div class="col-12 powered-by">
+          Powered by
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <img *ngIf="!squeeze" class="pr-3" style="width: inherit;" src="assets/images/powered-by.png" 
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+          <div *ngIf="!squeeze" class="powered-by-text" style="display: none; color: #fff; font-size: 14px;">
+            MobileArts
+          </div>
+          <img *ngIf="squeeze" style="width: inherit;" src="assets/images/powered-by-sm.png" 
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+          <div *ngIf="squeeze" class="powered-by-text-sm" style="display: none; color: #fff; font-size: 12px;">
+            MA
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

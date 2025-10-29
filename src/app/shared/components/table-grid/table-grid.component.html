@@ -1,0 +1,570 @@
+<p-table #mobiboxTable
+         [value]="filteredData()"
+         [columns]="editableCols()"
+         [dataKey]="dataKey()"
+         [rows]="rows()"
+         [rowsPerPageOptions]="rowsPerPageOptions()"
+         [loading]="loading()"
+         [paginator]="true"
+         [resizableColumns]="true"
+         [rowHover]="true"
+         [scrollable]="true"
+         [(selection)]="selectedRows"
+         columnResizeMode="expand"
+         [id]="id()"
+         class="p-datatable-striped"
+         (onPage)="onPageClicked($event)">
+  @if (hasCaption()) {
+    <ng-template pTemplate="caption">
+      <div class="row justify-content-end">
+        @if (hasSearch()) {
+          <div class="col-12 col-md-auto">
+            <p-iconField iconPosition="left">
+              <p-inputIcon class="pi pi-search" />
+                <input type="text"
+                       pInputText
+                       placeholder="Search"
+                       [(ngModel)]="searchTerm">
+            </p-iconField>
+          </div>
+        }
+        @if (hasFilters()) {
+          <div class="col-12 col-lg-auto">
+            <p-button label="Filters"
+                      [outlined]="true"
+                      icon="pi pi-filter"
+                      class="button-border"
+                      (onClick)="toggleFilterFunc()" />
+          </div>
+        }
+        @if (hasClear()) {
+          <div class="col-12 col-lg-auto">
+            <p-button label="Clear All"
+                      [outlined]="true"
+                      icon="pi pi-times-circle"
+                      severity="secondary"
+                      class="button-border"
+                      (onClick)="clearTable()" />
+          </div>
+        }
+        @if (hasEditColumns()) {
+          <div class="col-12 col-lg-auto">
+            <p-button label="Edit Columns"
+                      [outlined]="true"
+                      icon="pi pi-table"
+                      severity="secondary"
+                      class="button-border"
+                      (onClick)="toggleEditColumnsFunc()" />
+          </div>
+        }
+          @if (additionalCaptionTemplate()) {
+            <ng-container *ngTemplateOutlet="additionalCaptionTemplate()"></ng-container>
+          }
+          @if (hasExport()) {
+          <div class="col-12 col-lg-auto">
+            <p-button label="Download"
+                      icon="pi pi-download"
+                      severity="success"
+                        class="button-border"
+                        (onClick)="exportExcel()" />
+          </div>
+        }
+      </div>
+      @if (newCaptionRow()) {
+        <ng-container *ngTemplateOutlet="newCaptionRow()"></ng-container>
+      }
+    </ng-template>
+  }
+  <ng-template pTemplate="header" let-columns>
+    @if (customHeaderTemplate()) {
+      <ng-container *ngTemplateOutlet="customHeaderTemplate()"></ng-container>
+    } @else {
+      @if (additionalHeaderTemplate()) {
+        <ng-container *ngTemplateOutlet="additionalHeaderTemplate()"></ng-container>
+      }
+      <tr>
+        @if (canReorder()) {
+          <th></th>
+        }
+        @if (hasSelection()) {
+          <th>
+            <p-tableHeaderCheckbox />
+          </th>
+        }
+        @for (col of (editableCols()); track $index) {
+          @if (col['frozen']) {
+            <th pFrozenColumn
+                alignFrozen="right"
+                [frozen]="true"
+                [style]="col['frozenType'] ? 'width: 60px;' : ''">
+                  {{col['field']}}
+            </th>
+          }  @else {
+            @if (col['selected']) {
+              <th [pSortableColumn]="col['value']">
+                @if (col['fieldPosition'] == 'right') {
+                  @if (col['fieldImgFunc'] || col['fieldImg']) {
+                    <img [src]="col?.fieldImg ?? col?.fieldImgFunc()" class="mr-1">
+                  }
+                  @if (col['fieldIconFunc'] || col['fieldIcon']) {
+                    <i [class]="col?.fieldIcon ?? col?.fieldIconFunc()" class="mr-1" ></i>
+                  }
+                }
+                {{col['field']}} <p-sortIcon [field]="col['value']"/>
+                @if (col['fieldPosition'] == 'left' || !col['fieldPosition']) {
+                  @if (col['fieldImg']) {
+                    <img [src]="col?.fieldImg ?? col?.fieldImgFunc()" class="ml-1">
+                  }
+                  @if (col['fieldIcon']) {
+                    <i [class]="col?.fieldIcon ?? col?.fieldIconFunc()" class="ml-1" ></i>
+                  }
+                }
+              </th>
+            }
+          }
+        }
+      </tr>
+    }
+  </ng-template>
+  <ng-template pTemplate="body"
+               let-value
+               let-columns="columns"
+               let-index="rowIndex"
+               let-expanded="expanded">
+    @if (customBodyTemplate()) {
+      <ng-container *ngTemplateOutlet="customBodyTemplate(); context: { $implicit: value, columns: selectedEditableCols() }"></ng-container>
+    } @else {
+      <tr>
+        @if (canReorder()) {
+          <td>
+            <div class="row justify-content-center">
+              <div class="col-auto">
+                <span class="pi pi-bars"></span>
+              </div>
+              <div class="col-auto">
+                <span>{{index + 1}}</span>
+              </div>
+            </div>
+          </td>
+        }
+        @if (hasSelection()) {
+          <td>
+            <p-tableCheckbox [value]="value" />
+          </td>
+        }
+        @for (col of editableCols(); track $index) {
+          @if (col['frozenType'] == 'menu') {
+            <td pFrozenColumn
+                alignFrozen="right"
+                [frozen]="true"
+                style="width: 60px;">
+              <div class="flex justify-content-center">
+                <p-menu [model]="col['items']"
+                        [popup]="true"
+                        appendTo="body"
+                        #menu />
+                <button pButton
+                        icon="pi pi-ellipsis-v"
+                        [text]="true"
+                        (click)="menu.toggle($event);
+                                 returnRowData(value)"></button>
+              </div>
+            </td>
+          } @else if (col['frozenType'] == 'edit') {
+            <td pFrozenColumn
+                alignFrozen="right"
+                [frozen]="true"
+                style="width: 60px;">
+              <p-button icon="pi pi-pencil"
+                        [text]="true"
+                        (onClick)="buttonOutputFunc(value)" />
+            </td>
+          } @else if (col['frozenType'] == 'delete') {
+            <td pFrozenColumn
+                alignFrozen="right"
+                [frozen]="true"
+                style="width: 60px;">
+              <p-button icon="pi pi-trash"
+                        [text]="true"
+                        severity="danger"
+                        (onClick)="buttonOutputFunc(value)" />
+            </td>
+          } @else if (col['frozenType'] == 'info') {
+            <td pFrozenColumn
+                alignFrozen="right"
+                [frozen]="true"
+                style="width: 60px;">
+              <p-button icon="pi pi-info-circle"
+                        [text]="true"
+                        (onClick)="buttonOutputFunc(value)" />
+            </td>
+          }
+          @else if (col['frozenType'] == 'view') {
+            <td pFrozenColumn
+                alignFrozen="right"
+                [frozen]="true"
+                style="width: 60px;">
+              <p-button icon="pi pi-eye"
+                        [text]="true"
+                        (onClick)="buttonOutputFunc(value)" />
+            </td>
+          } @else if (col['frozenType'] == 'custom') {
+            <td pFrozenColumn
+                alignFrozen="right"
+                [frozen]="true"
+                style="max-width: 60px;">
+              <p-button [icon]="col['icon']"
+                        [text]="true"
+                        (onClick)="buttonOutputFunc(value)" />
+            </td>
+          } @else {
+            @if (col['selected']) {
+              <td pFrozenColumn
+                  [frozen]="col['frozen']"
+                  alignFrozen="right">
+                <div class="row mx-0"
+                     [ngClass]="{'justify-content-between align-items-center':
+                                    col['isExpanded'],
+                                    'justify-content-center':
+                                    !col['isExpanded']}">
+                  <div class="col-auto"
+                       [ngClass]="{'px-0': !col['isExpanded']}">
+                    @if (!value[col['value']]
+                    && col['type'] != 'boolean'
+                    && col['type'] != 'number'
+                    && col['type'] != 'link'
+                    && col['type'] != 'switch'
+                    && col['type'] != 'input') {
+                   -
+                 }
+                 @else if (col['type'] == 'link') {
+                   <p-button icon="pi pi-chevron-right"
+                             [text]="true"
+                             iconPos="right"
+                             [label]="col?.linkLabel"
+                             (onClick)="col?.linkFunc(value)" />
+                 } @else if (col['type'] == 'switch') {
+                   <p-toggleswitch  [(ngModel)]="value[col['value']]"
+                                     [disabled]="col?.disabledFunc?.(value) || col?.disabled"
+                                   (onChange)="col?.switchFunc(value, $event.checked)" />
+                 } @else if (col['type'] == 'number') {
+                   {{value[col['value']] | commaSeparatedNumber}}
+                 } @else if (col['type'] == 'string' && isCommaSeparatedString(value[col['value']])) {
+                   @for (splitedValue of value[col['value']].split(','); track $index) {
+                     {{splitedValue}}
+                     <br />
+                   }
+                 } @else if (col['type'] == 'image') {
+                   @if (col['imgArray']) {
+                     <div class="row align-items-center justify-content-start">
+                       @for (img of col?.imgFunc(value); track $index) {
+                         <div class="col-auto">
+                           <img [src]="img"
+                                (error)="handleImageError($event)"
+                                class="array-image">
+                         </div>
+                       }
+                     </div>
+                   } @else {
+                     @if (col['img']) {
+                       <img [src]="col?.img"
+                          (error)="handleImageError($event)"
+                          class="ddl-image">
+                     }
+                     @if (col['imgFunc']) {
+                       <img [src]="col?.imgFunc(value)"
+                            (error)="handleImageError($event)"
+                            class="ddl-image" />
+                     }
+                   }
+                 } @else if (col['type'] == 'icon') {
+                   @if (col['iconArray']) {
+                     @for (icon of col?.iconFunc(value); track $index) {
+                       <i [class]="icon" class="ml-1" ></i>
+                     }
+                   } @else {
+                     @if (col['icon']) {
+                       <i [class]="col?.icon" class="ml-1" ></i>
+                     }
+                     @if (col['iconFunc']) {
+                       <i [class]="col?.iconFunc(value)" class="ml-1" ></i>
+                     }
+                   }
+                 } @else if (col['type'] == 'boolean') {
+                   <i [ngClass]="[value[col['value']] ?
+                     'fas fa-check text-success' :
+                     'fas fa-times text-danger']"></i>
+                 } @else if (col['type'] == 'currency') {
+                    {{value[col['value']] | currency: col['currency']}}
+                  }
+                  @else {
+                   @if (col['img']) {
+                     <img [src]="value[col['img']]"
+                          (error)="handleImageError($event)"
+                          class="ddl-image">
+                   }
+                   @if (col['imgFunc']) {
+                     <img [src]="col?.imgFunc(value)"
+                          (error)="handleImageError($event)"
+                          class="ddl-image" />
+                   }
+                   @if (col['iconFunc']) {
+                     <i [class]="col?.iconFunc(value)" class="ml-1" ></i>
+                   }
+                   @if (col['icon']) {
+                     <i [class]="col?.icon" class="ml-1" ></i>
+                   }
+                   @if (col['type'] == 'country') {
+                     <img src="assets/images/logos/flags/{{value[col['value']]?.toLowerCase()}}.png"
+                          class="country-flag">&nbsp;
+                   }
+                   @if (col['type'] == 'date') {
+                     {{value[col['value']] | date: 'MM/dd/yyyy'}}
+                   } @else if (col['type'] == 'dateTime') {
+                     {{value[col['value']] | date: 'MM/dd/yyyy HH:mm'}}
+                   } @else {
+                     {{value[col['value']]}}
+                   }
+                 }
+                  </div>
+                  @if (col['isExpanded']) {
+                    <div class="col-auto">
+                      <p-button [pRowToggler]="value"
+                                [text]="true"
+                                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-up'" />
+                    </div>
+                  }
+                </div>
+              </td>
+            }
+          }
+        }
+      </tr>
+    }
+  </ng-template>
+  @if (hasTotal()) {
+    <ng-template pTemplate="footer">
+      @if (customFooterTemplate()) {
+        <ng-container *ngTemplateOutlet="customFooterTemplate()"></ng-container>
+      } @else {
+        <tr>
+          @for (col of editableCols(); track $index) {
+            @if (!col['totalType']) {
+              <td>
+                <div class="row justify-content-center">
+                  <div class="col-auto">
+                    {{$index == 0 ? 'Totals:' : ''}}
+                  </div>
+                </div>
+              </td>
+            } @else {
+              <td>
+                <div class="row justify-content-center">
+                  <div class="col-auto">
+                    <small class="text-break">{{(col['totalType'] == 'sum' ? 'Sum: ' : 'Avg(%): ')
+                                              + (col['totalType'] == 'avg' ?
+                                                  (getSumAndAvg(col['totalType'], col['value']) | number: '1.3-3') :
+                                                   getSumAndAvg(col['totalType'], col['value']))}}
+                  </small>
+                </div>
+              </div>
+            </td>
+            }
+          }
+        </tr>
+      }
+    </ng-template>
+  }
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td [colSpan]="editableCols().length">
+        @if (customEmptyMessageTemplate()) {
+          <ng-container *ngTemplateOutlet="customEmptyMessageTemplate()"></ng-container>
+        } @else {
+          No Data found.
+        }
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="paginatorleft" let-state>
+    <h5 class="pl-1">{{state.totalRecords}} Logs</h5>
+  </ng-template>
+</p-table>
+
+<p-drawer [(visible)]="toggleEditColumns"
+           position="right"
+           [style]="{'width': '30%'}"
+           appendTo="body">
+    <ng-template #header>
+      <div class="row">
+        <div class="col-auto">
+          <i class="pi pi-table sidebar-icon"></i>
+        </div>
+        <div class="col-auto sidebar-title">
+          Edit Columns
+        </div>
+      </div>
+    </ng-template>
+    <div class="container">
+      <div class="row mb-4">
+        <div class="col">
+          <p-iconField iconPosition="left">
+            <p-inputIcon class="pi pi-search" />
+              <input type="text"
+                     pInputText
+                     placeholder="Search"
+                     [(ngModel)]="searchCols">
+          </p-iconField>
+        </div>
+      </div>
+      <div class="container px-3">
+        @for (col of filteredEditableCols(); track $index) {
+          @if (!col['frozen'] && col['field']) {
+            <div class="row mb-3 align-items-center justify-content-between">
+              <div class="col-auto sidebar-text d-flex align-items-center">
+                @if (col['fieldPosition'] == 'right') {
+                  @if (col['fieldImgFunc'] || col['fieldImg']) {
+                    <img [src]="col?.fieldImg ?? col?.fieldImgFunc()" class="mr-1" style="height: 20px; width: auto;">
+                  }
+                  @if (col['fieldIconFunc'] || col['fieldIcon']) {
+                    <i [class]="col?.fieldIcon ?? col?.fieldIconFunc()" class="mr-1" style="font-size: 18px;"></i>
+                  }
+                }
+                {{col['field']}}
+                @if (col['fieldPosition'] == 'left' || !col['fieldPosition']) {
+                  @if (col['fieldImgFunc'] || col['fieldImg']) {
+                    <img [src]="col?.fieldImg ?? col?.fieldImgFunc()" class="ml-1" style="height: 20px; width: auto;">
+                  }
+                  @if (col['fieldIconFunc'] || col['fieldIcon']) {
+                    <i [class]="col?.fieldIcon ?? col?.fieldIconFunc()" class="ml-1" style="font-size: 18px;"></i>
+                  }
+                }
+              </div>
+              <div class="col-auto">
+                <p-toggleswitch [ngModel]="col['selected']"
+                               (onChange)="toggleColumnSelection(col['value'], $event.checked)"
+                               [disabled]="col['noEdit'] || isColumnDisabled(col['value'])"/>
+              </div>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  <ng-template #footer>
+    <div class="row justify-content-end align-items-center m-0 p-3">
+      <div class="col-auto p-0">
+        <p-button icon="pi pi-refresh"
+                  label="Reset All" [outlined]="true"
+                  severity="secondary"
+                  [outlined]="true"
+                  class="button-border"
+                  (onClick)="resetAllCols()" />
+      </div>
+    </div>
+  </ng-template>
+</p-drawer>
+
+<p-drawer [(visible)]="toggleFilter"
+           position="right"
+           [style]="{'width': '30%'}"
+           appendTo="body">
+    <ng-template #header>
+      <div class="row mb-4">
+          <div class="col-auto">
+            <i class="pi pi-filter sidebar-icon"></i>
+          </div>
+          <div class="col-auto sidebar-title">
+            Advanced Filters
+          </div>
+        </div>
+    </ng-template>
+    <div class="overflow-y-auto">
+      <div class="container">
+        <div class="row mt-2">
+          <div class="col">
+            @for (col of editableCols(); track $index) {
+              @if (!col['frozen']
+                && col['type'] != 'link'
+                && col['field']) {
+                @if (col['filterType'] == 'multiselect') {
+                  <div class="row mt-2">
+                    <div class="col">
+                      <div class="form-group">
+                        <label class="mb-2 d-flex align-items-center">
+                          @if (col['fieldPosition'] == 'right') {
+                            @if (col['fieldImgFunc'] || col['fieldImg']) {
+                              <img [src]="col?.fieldImg || (col?.fieldImgFunc ? col.fieldImgFunc() : '')" class="mr-1" style="height: 20px; width: auto;">
+                            }
+                            @if (col['fieldIconFunc'] || col['fieldIcon']) {
+                              <i [class]="col?.fieldIcon || (col?.fieldIconFunc ? col.fieldIconFunc() : '')" class="mr-1" style="font-size: 18px;"></i>
+                            }
+                          }
+                          {{col['field']}}
+                          @if (col['fieldPosition'] == 'left' || !col['fieldPosition']) {
+                            @if (col['fieldImgFunc'] || col['fieldImg']) {
+                              <img [src]="col?.fieldImg || (col?.fieldImgFunc ? col.fieldImgFunc() : '')" class="ml-1" style="height: 20px; width: auto;">
+                            }
+                            @if (col['fieldIconFunc'] || col['fieldIcon']) {
+                              <i [class]="col?.fieldIcon || (col?.fieldIconFunc ? col.fieldIconFunc() : '')" class="ml-1" style="font-size: 18px;"></i>
+                            }
+                          }
+                        </label>
+                        <p-multiSelect [options]="filterOptionsByColumn()[col['value']]"
+                                       [(ngModel)]="MultiselectFilterModels()[col['value']]"
+                                       [filter]="true"
+                                       [showClear]="true"
+                                       appendTo="body"
+                                       [placeholder]="'Select ' + col['field'] + '(s)' "
+                                       [virtualScroll]="(filterOptionsByColumn()?.[col?.value]?.length || 0) > 30"
+                                       [virtualScrollItemSize]="30">
+                                       @if (col['type'] == 'country') {
+                                        <ng-template pTemplate="item" let-item>
+                                          <div class="row align-items-center">
+                                            <div class="col-auto">
+                                              <img [src]="'assets/images/logos/flags/' + item?.toLowerCase() + '.png'" class="mr-1">
+                                              {{item}}
+                                            </div>
+                                          </div>
+                                        </ng-template>
+                                       }
+                                    </p-multiSelect>
+                      </div>
+                    </div>
+                  </div>
+                }
+                @else if (col['filterType'] == 'input') {
+                  <div class="row mt-2">
+                    <div class="col">
+                      <div class="form-group">
+                        <label class="mb-2 d-flex align-items-center">
+                          {{col['field']}}
+                        </label>
+                        <input type="text" pInputText [(ngModel)]="TextFilterModels()[col['value']]"
+                        [placeholder]="'Enter ' + col['field'] "/>
+                      </div>
+                    </div>
+                  </div>
+                }
+              }
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  <ng-template #footer>
+    <div class="row justify-content-end align-items-center m-0 p-3">
+      <div class="col-auto p-0">
+        <p-button icon="pi pi-filter-slash"
+                  label="Reset All" [outlined]="true"
+                  severity="secondary"
+                  [outlined]="true"
+                  (onClick)="resetAllFilters()" />
+      </div>
+      <div class="col-auto">
+        <p-button label="Apply Filters"
+                  severity="primary"
+                  (onClick)="applyFilters()" />
+      </div>
+    </div>
+  </ng-template>
+</p-drawer>
